@@ -1,0 +1,11 @@
+dockcompose-web:
+  build: .
+  ports:
+   - "5000"
+  volumes:
+   - .:/code
+  links:
+   - dockcompose-redis
+dockcompose-redis:
+  image: redis
+  hostname: redis
