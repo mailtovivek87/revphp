@@ -1,0 +1,147 @@
+version: '2'
+services:
+  ui:
+    build:
+      context: .
+      dockerfile: DockerfileUI
+      args:
+        PF_URL: "http://containerv10.cloudmunch.com:8000"
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - pf
+      - hpi
+    links:
+      - pf
+  pf:
+    build:
+      context: .
+      dockerfile: DockerfilePF
+      args:
+        CM_URL: "demo"
+        JENKINS_URL: "http://containerv10.cloudmunch.com:8080/jenkins"
+        CM_DASH_URL: "demo"
+        CM_API_URL: "demo"
+        GITHUB_CLIENT_ID: "******"
+        GITHUB_CLIENT_SECRET: "******"
+    ports:
+      - "8000:80"
+    volumes:
+      - platform:/var/cloudbox/platform
+      - domain:/var/cloudbox/domain
+      - logs:/var/log
+    links:
+      - hpi
+  hpi:
+    build:
+      context: .
+      dockerfile: DockerfileHPI
+      args:
+        JENKINS_URL: "http://containerv10.cloudmunch.com:8080/jenkins"
+        PF_URL: "http://containerv10.cloudmunch.com:8000/apitest2.php"
+    ports:
+      - "8080:8080"
+    volumes:
+      - domain:/var/cloudbox/domain
+      - logs:/var/log
+volumes:
+  platform:
+    external: true
+  domain:
+    external: true
+  logs:
+    external: true
+
+
+
+
+
+
+
+
+
+
+
+PF
+---
+
+FROM cloudmunch1/cm-hw-pf-244
+MAINTAINER Cloudmunch
+ARG CM_URL
+ARG JENKINS_URL
+ARG CM_DASH_URL
+ARG CM_API_URL
+ARG GITHUB_CLIENT_ID
+ARG GITHUB_CLIENT_SECRET
+RUN cat /var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch|jq .cloudmunch_url=\"$CM_URL\">tmp
+RUN ["mv", "tmp", "/var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch"]
+RUN cat /var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch|jq .cloudmunch_dashboard_url=\"$CM_DASH_URL\">tmp
+RUN ["mv", "tmp", "/var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch"]
+RUN cat /var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch|jq .cloudmunch_api_url=\"$CM_API_URL\">tmp
+RUN ["mv", "tmp", "/var/cloudbox/platform/_CUSTOM_/data/contexts/settings/cloudmunch"]
+RUN cat /var/cloudbox/_MASTER_/data/contexts/executors/CMJENKINS|jq .configuration.base_url=\"$JENKINS_URL\">tmp
+RUN ["mv", "tmp", "/var/cloudbox/_MASTER_/data/contexts/executors/CMJENKINS"]
+RUN cat /var/cloudbox/_MASTER_/data/contexts/settings/interfaces|jq .github.client_id=\"$GITHUB_CLIENT_ID\">tmp
+RUN ["mv", "tmp", "/var/cloudbox/_MASTER_/data/contexts/settings/interfaces"]
+RUN cat /var/cloudbox/_MASTER_/data/contexts/settings/interfaces|jq .github.client_secret=\"$GITHUB_CLIENT_SECRET\">tmp
+RUN ["chown", "-R", "cloudmunch:cloudmunch", "/var/cloudbox"]
+RUN ["chown", "-R", "cloudmunch:cloudmunch", "/var/www/html"]
+EXPOSE 80
+ENTRYPOINT ["/usr/sbin/httpd","-D","FOREGROUND"]
+
+
+
+
+UI
+---
+
+FROM cloudmunch1/cm-hw-1851
+MAINTAINER Cloudmunch
+ARG PF_URL
+WORKDIR /var/www/html/cloudbox/newdashboard/javascript/app/common
+RUN echo {\"SERVER\":\"$PF_URL\"} > serverConfig.json
+RUN ["chown", "-R", "cloudmunch:cloudmunch", "/var/www/html/"]
+EXPOSE 80
+ENTRYPOINT ["/usr/sbin/httpd","-D","FOREGROUND"]
+#WORKDIR ../
+
+
+
+
+HPI
+----
+
+FROM cloudmunch1/d_cloudmunch-cloudmunch-hpi-10
+MAINTAINER Cloudmunch
+ARG PF_URL
+ARG JENKINS_URL
+WORKDIR /opt/jenkins
+RUN xmlstarlet ed --inplace -u cmUrl -v $PF_URL com.cloudmunch.plugins.CloudmunchWrapper.xml
+RUN xmlstarlet ed --inplace -u jenkinsUrl -v $JENKINS_URL jenkins.model.JenkinsLocationConfiguration.xml
+RUN ["chown", "-R", "cloudmunch:cloudmunch", "/opt/jenkins"]
+
+ENTRYPOINT ["/bin/bash"]
+ADD tomcat.sh /tomcat.sh
+RUN chmod +x /*.sh
+EXPOSE 8080
+CMD ["/tomcat.sh"]
+
+
+tomcat.sh
+-----------
+chown -R cloudmunch:cloudmunch /usr/share/tomcat
+chown -R cloudmunch:cloudmunch /var/log/tomcat
+chown -R cloudmunch:cloudmunch /opt/jenkins
+chown -R cloudmunch:cloudmunch /var/cloudbox/jenkins
+runuser -l cloudmunch -c 'tomcat start'
+tail -f /var/log/tomcat/catalina.out
+
+
+
+
+Checkpoints :
+User on host cloudmunch:cloudmunch 580
+install plugin - pf and hpi
+set api keys
+
