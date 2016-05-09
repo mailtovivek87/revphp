@@ -145,3 +145,47 @@ User on host cloudmunch:cloudmunch 580
 install plugin - pf and hpi
 set api keys
 
+
+
+#!/bin/bash 
+
+smb_password="shoreateskyjust"
+
+echo "#Installing smb" 
+sudo yum -y install samba.x86_64
+echo $? 
+
+echo "#Creating share folder" 
+mkdir -p /srv/samba/cmshare
+chown cloudmunch:cloudmunch /srv/samba/cmshare/
+echo $? 
+
+echo "#Taking backup of smb config to home folder"
+sudo cp /etc/samba/smb.conf /home/cloudmunch/
+echo $? 
+
+echo "#Writing to smb config"
+FILE="/etc/samba/smb.conf"
+cat >> $FILE <<- EOM
+
+# Added for winshare in CM
+[cmshare]
+path = /srv/samba/cmshare
+valid users = cloudmunch
+browsable = yes
+read only = no
+EOM
+echo $? 
+
+echo "#Setting a password for the smb user"
+(echo $smb_password; echo $smb_password) | sudo smbpasswd -a cloudmunch -s
+echo $? 
+
+echo "#Enabling and starting service"
+systemctl enable smb.service
+systemctl enable nmb.service
+systemctl start nmb.service
+systemctl start smb.service
+echo $? 
+
+echo "#Done - exiting"
