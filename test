@@ -231,3 +231,30 @@ echo "#Done - exiting"
 /var/cloudbox/platform/_CUSTOM_/data/contexts/users/admin@honeywell.com
 
 {"id":"admin@honeywell.com","name":"admin@honeywell.com","auth":"basic","status":"ACTIVE","timestamp":"2016041115423598016","password":"F0F9-e981cdffa77de68be4e780ddcd0393f6a9c7e5f3df25ca17255d18a23afd550d7ae00a7619d9c7b658ae147e0ce88032d6384659b48087918235a9af05053e9c","base_password":"F0F9-e981cdffa77de68be4e780ddcd0393f6a9c7e5f3df25ca17255d18a23afd550d7ae00a7619d9c7b658ae147e0ce88032d6384659b48087918235a9af05053e9c","domain":{"HW":{"domain_id":"HW","name":"HW","role":"admin"}},"default_domain":"HW","created_date":"2015-12-19 11:05:18.89805","created_by":"prasanna@cloudmunch.com","updated_by":"prasanna@cloudmunch.com","updated_date":"2016-05-09 10:57:43.97633","apikey":"4381f59a056788758e13e4b6d36b3bcbe650b82c18ed2af05426a02d2b4d3b10775d7c859d3c4a1d3a7d67d36c92d794e3ac69b1bfbd18d61501c7c1a1e93ca2","firstname":"Admin","lastname":"Admin","email":"admin@honeywell.com","role":"admin","image":"/newdashboard/images/profile-photos/default_user.png","imageName":null,"isLoggedTill":1451414772049,"currentDomain":"TEST","slack":{"community_invited":"NO","channel_invited":"2016-02-04 05:30:54.57515","registration_invited":"2016-02-11 07:57:52.39654","invitation_ack_received":"NO"},"newPassword":"Cloudmunch@1","confirmPassword":"Cloudmunch@1","channels":{},"user_id":"admin@honeywell.com","user_name":"{$user_registry->name}","slack_user":{"id":"U0G9PQMQS","name":"Admin","first_name":null,"email":"admin@honeywell.com"}}
+
+
+
+
+/var/cloudbox/platform/_CUSTOM_/data/contexts/domains
+{
+  "channels": {},
+  "slack": {
+    "id": "G0TL7K6RG",
+    "name": "test",
+    "channel_created": "YES",
+    "last_notification": "NOT2016050714320525348"
+  },
+  "id": "HW",
+  "name": "HW",
+  "status": "ACTIVE",
+  "trial_mode": "NO",
+  "admin": {
+    "admin@hoenywell.com": "admin"
+  },
+  "email_domain": "honeywell.com",
+  "created_date": "2016-02-12 10:48:13.32565",
+  "created_by": "admin@honeywell.com",
+  "updated_by": "scheduler",
+  "updated_date": "2016-05-07 14:32:40.52271",
+  "last_activation_notification": "2016-02-12 12:15:08.16203"
+}
