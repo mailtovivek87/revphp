@@ -189,3 +189,35 @@ systemctl start smb.service
 echo $? 
 
 echo "#Done - exiting"
+
+
+
+
+
+
+
+{
+    "id" : "interfaces",
+    "name": "cloudmunch default interfaces",
+    "github" : {
+        "username" : "cloudmunch1",
+        "client_id":"8b758862d619e5845820",
+        "client_secret" : "23e09c3d189eed8fce3c63351d86ce35da329174"
+    },
+    "slack" : {
+        "channel" : "@cloudmunchmgr",
+        "slack_username" : "developer@cloudmunch",
+        "callback_url" : "{cloudmunch_api_url}",
+        "webhook_message": "T0F2745QR/B0UH7AZME/cfniGJUdYYBwyDD97WNrQlP9",
+        "access_token":"xoxp-15075141841-27197522274-28585432695-6fe2106e4a",
+        "support_channel_id" : "#prodops",
+        "support_webhook_message": "T025L298F/B0N4BJ3SQ/9DZbJHOLHfGQTCNjDGyMQJ6h",
+        "support_access_token":"xoxp-16329837698-16329837842-16324151780-affd395da9"
+    },
+    "googleanalytics" : {
+        "client_id" : "407445975648-fcfslsrfdf8qaa42t60gpjjq07lq6tgh.apps.googleusercontent.com",
+        "client_secret" : "Noutgy_VaQ0Dj_dk_1H99moV",
+        "callback_url" : "{cloudmunch_api_url}",
+        "nonce" : "{request_id}"
+    }
+}
